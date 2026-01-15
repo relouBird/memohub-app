@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoHub - Statistiques ENSPD</title>
+    <link rel="stylesheet" href="../styles/webcss/font-awesome.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/title-bar.css">
+    <link rel="icon" href="../public/logo.ico">
+    <script src="../scripts/chart.js"></script>
+    <style>
+        p.details {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        /* Textes */
+        .logo-subtitle {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        /* Header */
+        .year-select {
+            margin-right: 10px;
+        }
+
+        /* Layout blocs */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stats-grid-large {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Cards */
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .stat-card-white {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-title {
+            margin-bottom: 15px;
+            color: #003366;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+
+        /* Tables */
+        .full-width-table {
+            width: 100%;
+        }
+
+        /* Bottom block */
+        .stats-bottom {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barre de titre personnalisée -->
+    <div class="custom-titlebar">
+        <div class="titlebar-left">
+            <div class="app-logo">
+                <img alt="logo/img" src="../public/image.png" width="30">
+            </div>
+            <span class="app-title">MemoHub ENSPD</span>
+            <span class="app-subtitle">Administrateur</span>
+        </div>
+
+        <div class="titlebar-center">
+            <button class="nav-btn active">Accueil</button>
+            <button class="nav-btn">Mémoires</button>
+            <button class="nav-btn">Utilisateurs</button>
+            <button class="nav-btn">Statistiques</button>
+        </div>
+
+        <div class="titlebar-right">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span>Administrateur</span>
+            </div>
+
+            <div class="window-controls">
+                <button class="window-btn minimize" id="minimizeBtn" title="Réduire">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="0" y="5" width="12" height="2" />
+                    </svg>
+                </button>
+                <button class="window-btn maximize" id="maximizeBtn" title="Agrandir">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" />
+                    </svg>
+                </button>
+                <button class="window-btn close" id="closeBtn" title="Fermer">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <path d="M1 1 L11 11 M11 1 L1 11" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img alt="logo/img" src="../public/image.png" width="50">
+                <h1>MemoHub ENSPD</h1>
+            </div>
+
+            <div class="profile-selector">
+                <h3>Profil actuel</h3>
+                <div class="profile-buttons">
+                    <button type="button" class="profile-btn active" id="studentProfile">
+                        <i class="fas fa-user-graduate"></i> Étudiant
+                    </button>
+                    <button type="button" class="profile-btn" id="adminProfile">
+                        <i class="fas fa-user-shield"></i> Administrateur
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/filieres.html" class="nav-link">
+                        <i class="fas fa-sitemap"></i> Filières
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/browse.html" class="nav-link">
+                        <i class="fas fa-search"></i> Parcourir les mémoires
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/encadreurs.html" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i> Encadreurs
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/manage.html" class="nav-link">
+                        <i class="fas fa-database"></i> Gestion des mémoires
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/stats.html" class="nav-link active">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/backup.html" class="nav-link">
+                        <i class="fas fa-hdd"></i> Sauvegarde
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>Statistiques d'utilisation - Administrateur</h2>
+
+                <div class="header-info">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Mode administrateur actif</span>
+                    </div>
+
+                    <select title="Year" class="btn year-select">
+                        <option>Année : 2025</option>
+                        <option>2024</option>
+                        <option>2023</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Statistiques détaillées ENSPD</h3>
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Exporter les données
+                    </button>
+                </div>
+
+                <!-- Graphiques -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4 class="stat-title">
+                            <i class="fas fa-chart-pie"></i> Mémoires par filière
+                        </h4>
+                        <div class="chart-container">
+                            <canvas id="filiereChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h4 class="stat-title">
+                            <i class="fas fa-chart-bar"></i> Mémoires par année
+                        </h4>
+                        <div class="chart-container">
+                            <canvas id="yearChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table + évolution -->
+                <div class="stats-grid-large">
+                    <div class="stat-card-white">
+                        <h4 class="stat-title">
+                            <i class="fas fa-user-graduate"></i> Statistiques par encadreur
+                        </h4>
+                        <table class="full-width-table">
+                            <thead>
+                                <tr>
+                                    <th>Encadreur</th>
+                                    <th>Mémoires</th>
+                                    <th>Taux</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dr. Murel Nkeng</td>
+                                    <td>23</td>
+                                    <td>95%</td>
+                                </tr>
+                                <tr>
+                                    <td>Pr. Xavier Nkeng</td>
+                                    <td>20</td>
+                                    <td>92%</td>
+                                </tr>
+                                <tr>
+                                    <td>Dr. Thibault Mbarga</td>
+                                    <td>15</td>
+                                    <td>88%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="stat-card-white">
+                        <h4 class="stat-title">
+                            <i class="fas fa-calendar-alt"></i> Évolution temporelle
+                        </h4>
+                        <div class="chart-placeholder">
+                            <p>Graphique d'évolution sur 5 ans</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tableau final -->
+                <div class="stats-bottom">
+                    <h4 class="stat-title">
+                        <i class="fas fa-table"></i> Statistiques par filière (détail)
+                    </h4>
+                    <table class="full-width-table">
+                        <thead>
+                            <tr>
+                                <th>Filière</th>
+                                <th>Mémoires</th>
+                                <th>Dernière année</th>
+                                <th>Encadreurs</th>
+                                <th>Croissance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Génie Informatique</td>
+                                <td>72</td>
+                                <td>2025</td>
+                                <td>10</td>
+                                <td>+12%</td>
+                            </tr>
+                            <tr>
+                                <td>Génie Électrique</td>
+                                <td>68</td>
+                                <td>2025</td>
+                                <td>12</td>
+                                <td>+8%</td>
+                            </tr>
+                            <tr>
+                                <td>Génie Civil</td>
+                                <td>45</td>
+                                <td>2025</td>
+                                <td>8</td>
+                                <td>+5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts graphiques inchangés -->
+    <script type="module" src="../scripts/stats.js"></script>
+
+    <script type="module" src="../../src/renderer.js"></script>
+</body>
+
+</html>

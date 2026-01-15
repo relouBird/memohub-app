@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoHub - Lecteur PDF ENSPD</title>
+    <link rel="stylesheet" href="../styles/webcss/font-awesome.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/title-bar.css">
+    <link rel="icon" href="../public/logo.ico">
+    <style>
+        p.details {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        p.details-admin {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        p.modal-note-p {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #777;
+        }
+
+        .logo-subtitle {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        .pdf-title {
+            margin-top: 20px;
+            color: var(--primary-color);
+        }
+
+        .pdf-description {
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .pdf-meta {
+            margin-top: 20px;
+            color: #777;
+        }
+
+        .pdf-info-box {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            width: 80%;
+        }
+
+        .pdf-info-box h4 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .pdf-info-box p {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .pdf-tools-grid {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .keywords-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .keywords-container h4 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .keywords-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .keyword-tag {
+            background-color: rgba(0, 51, 102, 0.1);
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        .abstract-section {
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .pdf-tools-sidebar {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .pdf-tools-sidebar h4 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .tools-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-start {
+            justify-content: flex-start;
+        }
+
+        .share-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .share-section h5 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .social-btn i {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barre de titre personnalisée -->
+    <div class="custom-titlebar">
+        <div class="titlebar-left">
+            <div class="app-logo">
+                <img alt="logo/img" src="../public/image.png" width="30">
+            </div>
+            <span class="app-title">MemoHub ENSPD</span>
+            <span class="app-subtitle">Administrateur</span>
+        </div>
+
+        <div class="titlebar-center">
+            <button class="nav-btn active">Accueil</button>
+            <button class="nav-btn">Mémoires</button>
+            <button class="nav-btn">Utilisateurs</button>
+            <button class="nav-btn">Statistiques</button>
+        </div>
+
+        <div class="titlebar-right">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span>Administrateur</span>
+            </div>
+
+            <div class="window-controls">
+                <button class="window-btn minimize" id="minimizeBtn" title="Réduire">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="0" y="5" width="12" height="2" />
+                    </svg>
+                </button>
+                <button class="window-btn maximize" id="maximizeBtn" title="Agrandir">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" />
+                    </svg>
+                </button>
+                <button class="window-btn close" id="closeBtn" title="Fermer">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <path d="M1 1 L11 11 M11 1 L1 11" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img alt="logo/img" src="../public/image.png" width="50">
+                <h1>MemoHub ENSPD</h1>
+            </div>
+
+            <div class="profile-selector">
+                <h3>Profil actuel</h3>
+                <div class="profile-buttons">
+                    <button type="button" class="profile-btn active" id="studentProfile">
+                        <i class="fas fa-user-graduate"></i> Étudiant
+                    </button>
+                    <button type="button" class="profile-btn" id="adminProfile">
+                        <i class="fas fa-user-shield"></i> Administrateur
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/filieres.html" class="nav-link">
+                        <i class="fas fa-sitemap"></i> Filières
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/browse.html" class="nav-link">
+                        <i class="fas fa-search"></i> Parcourir les mémoires
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/encadreurs.html" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i> Encadreurs
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/manage.html" class="nav-link">
+                        <i class="fas fa-database"></i> Gestion des mémoires
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/stats.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/backup.html" class="nav-link">
+                        <i class="fas fa-hdd"></i> Sauvegarde
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2 id="pageTitle">Lecteur PDF - Consultation</h2>
+                <div class="header-info">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Connecté en local</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Lecteur PDF intégré</h3>
+                    <div class="title">
+                        <button class="btn btn-primary" id="zoomInBtn">
+                            <i class="fas fa-search-plus"></i> Zoom +
+                        </button>
+                        <button class="btn btn-primary" id="zoomOutBtn">
+                            <i class="fas fa-search-minus"></i> Zoom -
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pdf-viewer">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3 id="pdfTitle" class="pdf-title">
+                        Thème XXXXXX
+                    </h3>
+                    <p id="pdfDescription" class="pdf-description">
+                        Mémoire de XXXXXX
+                    </p>
+                    <div class="pdf-meta" id="pdfDetails">
+                        <p><i class="fas fa-user-graduate"></i> Auteur: XXXXXX</p>
+                        <p><i class="fas fa-chalkboard-teacher"></i> Encadreur: XXXXXX</p>
+                        <p><i class="fas fa-sitemap"></i> Filière: Génie Informatique</p>
+                        <p><i class="fas fa-file-alt"></i> Taille: XXXXXX</p>
+                    </div>
+
+                    <iframe title="pdf-data" class="pdf-data" src=""></iframe>
+                </div>
+
+                <div class="pdf-tools-grid">
+                    <div class="keywords-container">
+                        <h4><i class="fas fa-tags"></i> Mots-clés</h4>
+                        <div class="keywords-tags"></div>
+
+                        <h4 class="abstract-section"><i class="fas fa-file-contract"></i> Résumé</h4>
+                        <p></p>
+                    </div>
+
+                    <div class="pdf-tools-sidebar">
+                        <h4><i class="fas fa-cogs"></i> Outils PDF</h4>
+                        <div class="tools-buttons">
+                            <button class="btn btn-primary btn-start">
+                                <i class="fas fa-print"></i> Imprimer
+                            </button>
+                            <button class="btn btn-primary btn-start">
+                                <i class="fas fa-search"></i> Rechercher dans le texte
+                            </button>
+                            <button class="btn btn-primary btn-start">
+                                <i class="fas fa-bookmark"></i> Ajouter un signet
+                            </button>
+                            <button class="btn btn-primary btn-start">
+                                <i class="fas fa-highlighter"></i> Surligner
+                            </button>
+                            <button class="btn btn-success btn-start">
+                                <i class="fas fa-quote-left"></i> Citer ce mémoire
+                            </button>
+                        </div>
+
+                        <div class="share-section">
+                            <h5><i class="fas fa-share-alt"></i> Partager</h5>
+                            <!-- <div class="social-buttons">
+                                <button class="social-btn" style="background-color: #3b5998; color: white;">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="social-btn" style="background-color: #1da1f2; color: white;">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="social-btn" style="background-color: #0077b5; color: white;">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </button>
+                                <button class="social-btn" style="background-color: #25d366; color: white;">
+                                    <i class="fab fa-whatsapp"></i>
+                                </button>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <h2><i class="fas fa-user-shield"></i> Accès Administrateur ENSPD</h2>
+            <p class="modal-note-p">
+                Accès réservé au personnel administratif
+            </p>
+
+            <div class="form-group">
+                <label for="adminPassword">Mot de passe administrateur</label>
+                <input type="password" id="adminPassword" placeholder="Entrez le mot de passe">
+            </div>
+
+            <button type="button" class="login-btn" id="loginBtn">Se connecter</button>
+
+            <div class="modal-footer">
+                <p>ENSP Douala - Système de gestion des mémoires</p>
+                <p class="details-admin">
+                    Mot de passe : enspdmemo
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/viewer.js"></script>
+    <script type="module" src="../../src/renderer.js"></script>
+</body>
+
+</html>

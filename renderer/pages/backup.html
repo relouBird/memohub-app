@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoHub - Sauvegarde ENSPD</title>
+    <link rel="stylesheet" href="../styles/webcss/font-awesome.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/title-bar.css">
+    <link rel="icon" href="../public/logo.ico">
+    <style>
+        p.details {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        /* Textes */
+        .logo-subtitle {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        /* Search */
+        .backup-search {
+            width: 250px;
+        }
+
+        /* Sections */
+        .backup-history {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .backup-title {
+            margin-bottom: 20px;
+            color: #003366;
+        }
+
+        /* Grid layout */
+        .backup-grid {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* Cards */
+        .backup-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            margin-bottom: 15px;
+            color: #003366;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        .folder-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .folder-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Storage stats */
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 16%;
+            height: 100%;
+            background-color: #e63946;
+        }
+
+        .stats-mini-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-value-primary {
+            font-size: 24px;
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .stat-value-accent {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e63946;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .hidden {
+            position: absolute;
+            top: -9999px;
+        }
+    </style>
+</head>
+
+<body>
+        <!-- Barre de titre personnalisée -->
+        <div class="custom-titlebar">
+            <div class="titlebar-left">
+                <div class="app-logo">
+                <img alt="logo/img" src="../public/image.png" width="30">
+            </div>
+                <span class="app-title">MemoHub ENSPD</span>
+                <span class="app-subtitle">Administrateur</span>
+            </div>
+
+            <div class="titlebar-center">
+                <button class="nav-btn active">Accueil</button>
+                <button class="nav-btn">Mémoires</button>
+                <button class="nav-btn">Utilisateurs</button>
+                <button class="nav-btn">Statistiques</button>
+            </div>
+
+            <div class="titlebar-right">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <span>Administrateur</span>
+                </div>
+
+                <div class="window-controls">
+                    <button class="window-btn minimize" id="minimizeBtn" title="Réduire">
+                        <svg viewBox="0 0 12 12" fill="currentColor">
+                            <rect x="0" y="5" width="12" height="2" />
+                        </svg>
+                    </button>
+                    <button class="window-btn maximize" id="maximizeBtn" title="Agrandir">
+                        <svg viewBox="0 0 12 12" fill="currentColor">
+                            <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1.5"
+                                fill="none" />
+                        </svg>
+                    </button>
+                    <button class="window-btn close" id="closeBtn" title="Fermer">
+                        <svg viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M1 1 L11 11 M11 1 L1 11" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div> <div class="container">
+
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img alt="logo/img" src="../public/image.png" width="50">
+                <h1>MemoHub ENSPD</h1>
+            </div>
+
+            <div class="profile-selector">
+                <h3>Profil actuel</h3>
+                <div class="profile-buttons">
+                    <button type="button" class="profile-btn active" id="studentProfile">
+                        <i class="fas fa-user-graduate"></i> Étudiant
+                    </button>
+                    <button type="button" class="profile-btn" id="adminProfile">
+                        <i class="fas fa-user-shield"></i> Administrateur
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/filieres.html" class="nav-link">
+                        <i class="fas fa-sitemap"></i> Filières
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/browse.html" class="nav-link">
+                        <i class="fas fa-search"></i> Parcourir les mémoires
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/encadreurs.html" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i> Encadreurs
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/manage.html" class="nav-link">
+                        <i class="fas fa-database"></i> Gestion des mémoires
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/stats.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/backup.html" class="nav-link active">
+                        <i class="fas fa-hdd"></i> Sauvegarde
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>Sauvegarde & Restauration - Administrateur</h2>
+
+                <div class="header-info">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Mode administrateur actif</span>
+                    </div>
+
+                    <div class="search-box backup-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Rechercher une sauvegarde...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Sauvegarde des données MemoHub</h3>
+                    <div>
+                        <button type="button" class="btn btn-primary"><i class="fas fa-save"></i> Créer une
+                            sauvegarde</button>
+                        <button type="button" class="btn btn-success"><i class="fas fa-undo"></i> Restaurer</button>
+                    </div>
+                </div>
+
+                <!-- Historique -->
+                <div class="backup-history">
+                    <h4 class="backup-title"><i class="fas fa-history"></i> Historique des sauvegardes</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Nom</th>
+                                    <th>Taille</th>
+                                    <th>Type</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15/06/2025 10:30</td>
+                                    <td>enspd_memoires_backup_20250615.zip</td>
+                                    <td>2.8 Go</td>
+                                    <td><span class="badge badge-success">Complète</span></td>
+                                    <td><span class="badge badge-primary">Valide</span></td>
+                                    <td class="action-buttons">
+                                        <button type="button" class="action-btn view"><i
+                                                class="fas fa-info-circle"></i><span class="hidden">voir</span></button>
+                                        <button type="button" class="action-btn"><i class="fas fa-download"></i><span
+                                                class="hidden">voir</span></button>
+                                        <button type="button" class="action-btn delete"><i
+                                                class="fas fa-trash"></i><span class="hidden">voir</span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Config + Stats -->
+                <div class="backup-grid">
+
+                    <div class="backup-card">
+                        <h4 class="card-title"><i class="fas fa-cogs"></i> Configuration de sauvegarde</h4>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar"></i> Fréquence automatique</label>
+                            <select title="Frequency" class="btn full-width">
+                                <option>Tous les jours</option>
+                                <option>Toutes les semaines</option>
+                                <option>Tous les mois</option>
+                                <option>Désactivé</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-folder"></i> Emplacement</label>
+                            <div class="folder-input">
+                                <input title="Backup" type="text" value="C:\MemoHub\Backups\" readonly>
+                                <button type="button" class="btn btn-primary"><i class="fas fa-folder-open"></i> <span
+                                        class="hidden">voir</span></button>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success full-width">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                    </div>
+
+                    <div class="backup-card">
+                        <h4 class="card-title"><i class="fas fa-chart-line"></i> Statistiques de stockage</h4>
+
+                        <p><strong>8.1 Go</strong> / 50 Go</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+
+                        <div class="stats-mini-grid">
+                            <div class="stat-box">
+                                <div class="stat-value-primary">367</div>
+                                <div class="stat-label">Mémoires</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value-accent">15.4 Go</div>
+                                <div class="stat-label">PDFs</div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-danger full-width">
+                            <i class="fas fa-trash-alt"></i> Nettoyer
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../scripts/backup.js"></script>
+    <script type="module" src="../../src/renderer.js"></script>
+</body>
+
+</html>

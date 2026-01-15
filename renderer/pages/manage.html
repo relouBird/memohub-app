@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoHub - Gestion Admin ENSPD</title>
+    <link rel="stylesheet" href="../styles/webcss/font-awesome.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/title-bar.css">
+    <link rel="stylesheet" href="../styles/modal.css">
+    <link rel="icon" href="../public/logo.ico">
+    <style>
+        p.details {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        .logo-subtitle {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        .btn-spacing-left {
+            margin-left: 10px;
+        }
+
+        .bulk-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .bulk-actions-title {
+            margin-bottom: 15px;
+        }
+
+        .bulk-actions-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .hidden {
+            position: absolute;
+            top: -9999px;
+        }
+
+        .d-flex-btn {
+            display: flex;
+            gap: 5px;
+            ;
+        }
+
+        button.disabled {
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barre de titre personnalisée -->
+    <div class="custom-titlebar">
+        <div class="titlebar-left">
+            <div class="app-logo">
+                <img alt="logo/img" src="../public/image.png" width="30">
+            </div>
+            <span class="app-title">MemoHub ENSPD</span>
+            <span class="app-subtitle">Administrateur</span>
+        </div>
+
+        <div class="titlebar-center">
+            <button class="nav-btn active">Accueil</button>
+            <button class="nav-btn">Mémoires</button>
+            <button class="nav-btn">Utilisateurs</button>
+            <button class="nav-btn">Statistiques</button>
+        </div>
+
+        <div class="titlebar-right">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span>Administrateur</span>
+            </div>
+
+            <div class="window-controls">
+                <button class="window-btn minimize" id="minimizeBtn" title="Réduire">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="0" y="5" width="12" height="2" />
+                    </svg>
+                </button>
+                <button class="window-btn maximize" id="maximizeBtn" title="Agrandir">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" />
+                    </svg>
+                </button>
+                <button class="window-btn close" id="closeBtn" title="Fermer">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <path d="M1 1 L11 11 M11 1 L1 11" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img alt="logo/img" src="../public/image.png" width="50">
+                <h1>MemoHub ENSPD</h1>
+            </div>
+
+            <div class="profile-selector">
+                <h3>Profil actuel</h3>
+                <div class="profile-buttons">
+                    <button type="button" class="profile-btn active" id="studentProfile">
+                        <i class="fas fa-user-graduate"></i> Étudiant
+                    </button>
+                    <button type="button" class="profile-btn" id="adminProfile">
+                        <i class="fas fa-user-shield"></i> Administrateur
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/filieres.html" class="nav-link">
+                        <i class="fas fa-sitemap"></i> Filières
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/browse.html" class="nav-link">
+                        <i class="fas fa-search"></i> Parcourir les mémoires
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/encadreurs.html" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher"></i> Encadreurs
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/manage.html" class="nav-link active">
+                        <i class="fas fa-database"></i> Gestion des mémoires
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/stats.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/backup.html" class="nav-link">
+                        <i class="fas fa-hdd"></i> Sauvegarde
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>Gestion des mémoires - Administrateur</h2>
+
+                <div class="header-info">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Mode administrateur actif</span>
+                    </div>
+
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Rechercher un mémoire...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Gestion complète des mémoires</h3>
+
+                    <div>
+                        <button type="button" id="openModalBtn" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Ajouter un mémoire
+                        </button>
+
+                        <button type="button" class="btn btn-primary btn-spacing-left disabled">
+                            <i class="fas fa-file-export"></i> Exporter la liste
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Titre</th>
+                                <th>Auteur</th>
+                                <th>Encadreur</th>
+                                <th>Filière</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="adminMemosTable">
+                            <tr>
+                                <td>1</td>
+                                <td>Système IoT de monitoring</td>
+                                <td>Samuel Nkono</td>
+                                <td>Dr. Murel Nkeng</td>
+                                <td><span class="badge badge-success">Génie Informatique</span></td>
+                                <td>iot_2025.pdf</td>
+                                <td class="d-flex-btn">
+                                    <button type="button" class="action-btn view"><i class="fas fa-eye"></i> <span
+                                            class="hidden">voir</span></button>
+                                    <button type="button" class="action-btn edit"><i class="fas fa-edit"></i> <span
+                                            class="hidden">voir</span></button>
+                                    <button type="button" class="action-btn delete"><i class="fas fa-trash"></i> <span
+                                            class="hidden">voir</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bulk-actions">
+                    <h4 class="bulk-actions-title">Actions par lots</h4>
+                    <div class="bulk-actions-buttons">
+                        <button type="button" class="btn btn-danger">Supprimer</button>
+                        <button type="button" class="btn btn-primary disabled">Modifier filières</button>
+                        <button type="button" class="btn btn-success disabled">Importer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="memoireModal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>Ajouter un nouveau mémoire</h2>
+                    <button id="closeModalBtn" type="button" class="close-btn">&times;</button>
+                </div>
+
+                <form id="memoireForm" class="modal-body">
+                    <div class="form-group">
+                        <label>Titre du mémoire <span class="required">*</span></label>
+                        <textarea id="titre" name="titre" required
+                            placeholder="Entrez le titre complet du mémoire"></textarea>
+                        <span class="error-message" id="titreError">Le titre est requis</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Auteur <span class="required">*</span></label>
+                        <input type="text" id="auteur" name="auteur" required placeholder="Nom complet de l'auteur">
+                        <span class="error-message" id="auteurError">L'auteur est requis</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Encadreur <span class="required">*</span></label>
+                            <select title="encadreur" id="encadreur" name="encadreur" required>
+                                <option value="">Sélectionner un encadreur</option>
+                            </select>
+                            <span class="error-message" id="encadreurError">L'encadreur est requis</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Filière <span class="required">*</span></label>
+                            <select title="filiere" id="filiere" name="filiere" required>
+                                <option value="">Sélectionner une filière</option>
+                                <option value="1">Génie Électrique et IA</option>
+                                <option value="5">Génie Civil</option>
+                            </select>
+                            <span class="error-message" id="filiereError">La filière est requise</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Année <span class="required">*</span></label>
+                        <input type="number" id="annee" name="annee" required placeholder="2024" min="2000" max="2100">
+                        <span class="error-message" id="anneeError">L'année est requise</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fichier PDF <span class="required">*</span></label>
+                        <div class="file-input-wrapper">
+                            <input title="add-file" type="file" id="fichier_pdf" name="fichier_pdf" accept=".pdf"
+                                required>
+                            <label class="file-input-label" id="fileLabel">
+                                <span>📄</span>
+                                <span class="file-name" id="fileName">Cliquez pour sélectionner un fichier PDF</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="fichierError">Le fichier PDF est requis</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mots-clés</label>
+                        <div class="keywords-container" id="keywordsContainer">
+                            <span class="particularity">Aucun mot-clé ajouté</span>
+                        </div>
+                        <div class="keyword-input-row">
+                            <select title="keyword" id="motsClesSelect">
+                                <option value="">Sélectionner un mot-clé</option>
+                            </select>
+                            <button type="button" id="addKeyword">Ajouter</button>
+                        </div>
+                    </div>
+
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p class="text">Envoi en cours...</p>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel">Annuler</button>
+                    <button type="submit" class="btn btn-submit" id="submitBtn">Créer le
+                        mémoire</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="../scripts/manage.js"></script>
+    <script type="module" src="../scripts/modal.js"></script>
+    <script type="module" src="../../src/renderer.js"></script>
+</body>
+
+</html>

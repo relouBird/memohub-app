@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoHub - Encadreurs ENSPD</title>
+    <link rel="stylesheet" href="../styles/webcss/font-awesome.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/title-bar.css">
+    <link rel="icon" href="../public/logo.ico">
+    <style>
+        p.details {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        p.details-admin {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        p.modal-note-p {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #777;
+        }
+
+        div.div-search-box {
+            width: 250px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barre de titre personnalisée -->
+    <div class="custom-titlebar">
+        <div class="titlebar-left">
+            <div class="app-logo">
+                <img alt="logo/img" src="../public/image.png" width="30">
+            </div>
+            <span class="app-title">MemoHub ENSPD</span>
+            <span class="app-subtitle">Administrateur</span>
+        </div>
+
+        <div class="titlebar-center">
+            <button class="nav-btn active">Accueil</button>
+            <button class="nav-btn">Mémoires</button>
+            <button class="nav-btn">Utilisateurs</button>
+            <button class="nav-btn">Statistiques</button>
+        </div>
+
+        <div class="titlebar-right">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span>Administrateur</span>
+            </div>
+
+            <div class="window-controls">
+                <button class="window-btn minimize" id="minimizeBtn" title="Réduire">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="0" y="5" width="12" height="2" />
+                    </svg>
+                </button>
+                <button class="window-btn maximize" id="maximizeBtn" title="Agrandir">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" />
+                    </svg>
+                </button>
+                <button class="window-btn close" id="closeBtn" title="Fermer">
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                        <path d="M1 1 L11 11 M11 1 L1 11" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img alt="logo/img" src="../public/image.png" width="50">
+                <h1>MemoHub ENSPD</h1>
+            </div>
+
+            <div class="profile-selector">
+                <h3>Profil actuel</h3>
+                <div class="profile-buttons">
+                    <button type="button" class="profile-btn active" id="studentProfile">
+                        <i class="fas fa-user-graduate"></i> Étudiant
+                    </button>
+                    <button type="button" class="profile-btn" id="adminProfile">
+                        <i class="fas fa-user-shield"></i> Administrateur
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/filieres.html" class="nav-link">
+                        <i class="fas fa-sitemap"></i> Filières
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/browse.html" class="nav-link">
+                        <i class="fas fa-search"></i> Parcourir les mémoires
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="../pages/encadreurs.html" class="nav-link active">
+                        <i class="fas fa-chalkboard-teacher"></i> Encadreurs
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/manage.html" class="nav-link">
+                        <i class="fas fa-database"></i> Gestion des mémoires
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/stats.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="../pages/backup.html" class="nav-link">
+                        <i class="fas fa-hdd"></i> Sauvegarde
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2 id="pageTitle">Encadreurs - ENSP Douala</h2>
+                <div class="header-info">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Connecté en local</span>
+                    </div>
+                    <div class="search-box div-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchEncadreur" placeholder="Rechercher un encadreur...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Corps Professoral - Encadreurs de mémoires</h3>
+                </div>
+
+                <div class="encadreurs-list" id="encadreursContainer">
+                    <!-- Les cartes d'encadreurs seront ajoutées dynamiquement -->
+                    <div class="encadreur-card">
+                        <div class="encadreur-header">
+                            <div class="encadreur-avatar">MN</div>
+                            <div class="encadreur-info">
+                                <h4>Dr. Murel Nkeng</h4>
+                                <p>Génie Informatique</p>
+                            </div>
+                        </div>
+                        <p>Spécialiste en Intelligence Artificielle et Systèmes Distribués.</p>
+                        <div class="encadreur-stats">
+                            <span>Depuis 2015</span>
+                            <span>23 mémoires</span>
+                        </div>
+                    </div>
+
+                    <div class="encadreur-card">
+                        <div class="encadreur-header">
+                            <div class="encadreur-avatar">XN</div>
+                            <div class="encadreur-info">
+                                <h4>Pr. Xavier Nkeng</h4>
+                                <p>Génie Électrique</p>
+                            </div>
+                        </div>
+                        <p>Expert en Énergies Renouvelables et Réseaux Intelligents.</p>
+                        <div class="encadreur-stats">
+                            <span>Depuis 2014</span>
+                            <span>20 mémoires</span>
+                        </div>
+                    </div>
+
+                    <div class="encadreur-card">
+                        <div class="encadreur-header">
+                            <div class="encadreur-avatar">TM</div>
+                            <div class="encadreur-info">
+                                <h4>Dr. Thibault Mbarga</h4>
+                                <p>Génie Civil</p>
+                            </div>
+                        </div>
+                        <p>Spécialiste en Structures et Matériaux de Construction.</p>
+                        <div class="encadreur-stats">
+                            <span>Depuis 2016</span>
+                            <span>15 mémoires</span>
+                        </div>
+                    </div>
+
+                    <div class="encadreur-card">
+                        <div class="encadreur-header">
+                            <div class="encadreur-avatar">MT</div>
+                            <div class="encadreur-info">
+                                <h4>Pr. Murel Tchakounté</h4>
+                                <p>Génie Industriel</p>
+                            </div>
+                        </div>
+                        <p>Expert en Logistique et Optimisation des Processus Industriels.</p>
+                        <div class="encadreur-stats">
+                            <span>Depuis 2012</span>
+                            <span>18 mémoires</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <h2><i class="fas fa-user-shield"></i> Accès Administrateur ENSPD</h2>
+            <p class="modal-note-p">
+                Accès réservé au personnel administratif
+            </p>
+
+            <div class="form-group">
+                <label for="adminPassword">Mot de passe administrateur</label>
+                <input type="password" id="adminPassword" placeholder="Entrez le mot de passe">
+            </div>
+
+            <button type="button" class="login-btn" id="loginBtn">Se connecter</button>
+
+            <div class="modal-footer">
+                <p>ENSP Douala - Système de gestion des mémoires</p>
+                <p class="details-admin">
+                    Mot de passe : enspdmemo
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/encadreurs.js"></script>
+    <script type="module" src="../../src/renderer.js"></script>
+</body>
+
+</html>
